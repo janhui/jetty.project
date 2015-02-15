@@ -603,7 +603,7 @@ public class Response implements HttpServletResponse
                     writer.write(". Reason:\n<pre>    ");
                     writer.write(message);
                     writer.write("</pre>");
-                    writer.write("</p>\n<hr /><i><small>Powered by Jetty://</small></i>");
+                    ErrorPageGenerator.jettyPoweredHTML(writer);
                     writer.write("\n</body>\n</html>\n");
 
                     writer.flush();

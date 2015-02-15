@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.MimeTypes;
+import org.eclipse.jetty.server.ErrorPageGenerator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
@@ -164,7 +165,7 @@ public class DefaultHandler extends AbstractHandler
 
             writer.write("</ul><hr>");
             writer.write("<a href=\"http://eclipse.org/jetty\"><img border=0 src=\"/favicon.ico\"/></a>&nbsp;");
-            writer.write("<a href=\"http://eclipse.org/jetty\">Powered by Jetty:// Java Web Server</a><hr/>\n");
+            ErrorPageGenerator.jettyPoweredHTML(writer);
 
             writer.write("\n</BODY>\n</HTML>\n");
             writer.flush();
