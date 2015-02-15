@@ -126,72 +126,9 @@ public class ErrorHandler extends AbstractHandler
         if (message == null)
             message=HttpStatus.getMessage(code);
 
-        writer.write("<html>\n<head>\n");
-        writeErrorPageHead(request,writer,code,message);
-        writer.write("</head>\n<body>");
-        writeErrorPageBody(request,writer,code,message,showStacks);
+
+        ErrorPageGenerator.generateError(writer,request, code, message, showStacks, _showMessageInTitle);
         writer.write("\n</body>\n</html>\n");
-    }
-
-    /* ------------------------------------------------------------ */
-    protected void writeErrorPageHead(HttpServletRequest request, Writer writer, int code, String message)
-        throws IOException
-        {
-        writer.write("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>\n");
-        writer.write("<title>Error ");
-        writer.write(Integer.toString(code));
-
-        if (_showMessageInTitle)
-        {
-            writer.write(' ');
-            write(writer,message);
-        }
-        writer.write("</title>\n");
-    }
-
-    /* ------------------------------------------------------------ */
-    protected void writeErrorPageBody(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks)
-        throws IOException
-    {
-        String uri= request.getRequestURI();
-
-        writeErrorPageMessage(request,writer,code,message,uri);
-        if (showStacks)
-            writeErrorPageStacks(request,writer);
-
-        ErrorPageGenerator.jettyPoweredHTML(writer);
-    }
-
-    /* ------------------------------------------------------------ */
-    protected void writeErrorPageMessage(HttpServletRequest request, Writer writer, int code, String message,String uri)
-    throws IOException
-    {
-        writer.write("<h2>HTTP ERROR ");
-        writer.write(Integer.toString(code));
-        writer.write("</h2>\n<p>Problem accessing ");
-        write(writer,uri);
-        writer.write(". Reason:\n<pre>    ");
-        write(writer,message);
-        writer.write("</pre></p>");
-    }
-
-    /* ------------------------------------------------------------ */
-    protected void writeErrorPageStacks(HttpServletRequest request, Writer writer)
-        throws IOException
-    {
-        Throwable th = (Throwable)request.getAttribute("javax.servlet.error.exception");
-        while(th!=null)
-        {
-            writer.write("<h3>Caused by:</h3><pre>");
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            th.printStackTrace(pw);
-            pw.flush();
-            write(writer,sw.getBuffer().toString());
-            writer.write("</pre>\n");
-
-            th =th.getCause();
-        }
     }
 
     /* ------------------------------------------------------------ */
@@ -267,36 +204,7 @@ public class ErrorHandler extends AbstractHandler
     }
 
     /* ------------------------------------------------------------ */
-    protected void write(Writer writer,String string)
-        throws IOException
-    {
-        if (string==null)
-            return;
 
-        for (int i=0;i<string.length();i++)
-        {
-            char c=string.charAt(i);
-
-            switch(c)
-            {
-                case '&' :
-                    writer.write("&amp;");
-                    break;
-                case '<' :
-                    writer.write("&lt;");
-                    break;
-                case '>' :
-                    writer.write("&gt;");
-                    break;
-
-                default:
-                    if (Character.isISOControl(c) && !Character.isWhitespace(c))
-                        writer.write('?');
-                    else
-                        writer.write(c);
-            }
-        }
-    }
 
     /* ------------------------------------------------------------ */
     public interface ErrorPageMapper

@@ -596,15 +596,8 @@ public class Response implements HttpServletResponse
                     writer.write(' ');
                     if (message==null)
                         writer.write(message);
-                    writer.write("</title>\n</head>\n<body>\n<h2>HTTP ERROR: ");
-                    writer.write(Integer.toString(code));
-                    writer.write("</h2>\n<p>Problem accessing ");
-                    writer.write(uri);
-                    writer.write(". Reason:\n<pre>    ");
-                    writer.write(message);
-                    writer.write("</pre>");
-                    ErrorPageGenerator.jettyPoweredHTML(writer);
-                    writer.write("\n</body>\n</html>\n");
+
+                    ErrorPageGenerator.generateError(writer, code, uri, message);
 
                     writer.flush();
                     setContentLength(writer.size());
